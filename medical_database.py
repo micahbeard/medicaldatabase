@@ -15,60 +15,111 @@ If they enter 3 they are thanked for using the program and it exits
 
 hash the password
 error checking
+Project 3: Improved medical database: error handling, hashed password, more data stored in tuple 
+(first, last, weight, sex, result)
 '''
 import time
-from colorama import Fore
-password_usr = "Bg922!"
-# results = dict(John = "positive", Bob = "negative", George = "negative", Johnny = "negative", Keira = "positive", Sara = "positive", Marry = "negative")
+import hashlib
+
 
 # Data Base
-john = ('John', )
-
-
-
-user = input("Username: ")
+data = [('Bob', 'Bobson','175', 'M', 'negative'), \
+    ('John', 'Johnson','153', 'M', 'positive'), \
+    ('Sara', 'Sarason','130', 'F', 'positive')]
+data = list(data)
+# Var
+usr_id = ""
+file = open("usr_list.txt", 'r')
 auth = False
-print(Fore.GREEN,"Welcome to the Medical Database.", "Please Enter Your Password.")
+user_auth = True
+
+# Welcome Message
+print("Welcome to the Medical Database")
+user = input("Username: ")
+
+# Check if user exists
+while user_auth:
+    for lines in file:
+       
+        # Splicing User from Password Hash
+        if user in lines:                                                                                         
+            usr_id = lines.split(":")[1].strip()
+            print("Please Enter Your Password")
+    
+    # Password Input
+    for retry in range(3,0,-1):
+        password_input = input("Password: ")
+        pass_input_hash = hashlib.md5(password_input.encode())
+        pass_input = pass_input_hash.hexdigest()
+    
+        # Correct Password
+        if pass_input == usr_id:
+            auth = True
+            user_auth = False
+            break
+    
+        # Incorrect Password
+        if pass_input != usr_id:
+            print('You have',retry - 1,'atempts remaining')
+    
+    # Break loop after 3 tries 
+    if retry == 1:
+        user_auth = False
+
 time.sleep(.2)
-for retry in range(3):
-    password_input = input("Password: ")
-    if password_input == password_usr: 
-        auth = True
-        break
-    if password_input != password_usr:
-        print(Fore.RED,"Incorrect Password")
-time.sleep(.5)
+
+# Main Menu Loop
 while auth:
-    #usr_input = 0
-    print(Fore.WHITE,"1: Add New Result, 2: Search the Database, 3: Exit Program")
+    
+    # Menu Selector
+    print("1: Add New Result, 2: Search the Database, 3: Exit Program")
     action = input("What do you want to do? ")
-    #action = int(usr_input)
+    
+    
+    # Adding Patients
     if action == "1":
         while True:
-            name = input("Please give me the name of the Patient ['q' to quit]: ")
-            if name.lower() == 'q':
+            add_patient_first = input("Please give me the first name of the Patient ['q' to quit]: ")
+            if add_patient_first.lower() == 'q':
                 break
             else:
-                result_add = input("Give me their results (positive or negative): ")
-                results[name]=result_add.lower()
+                #print(data)
+                add_patient_last = input('Last Name: ')
+                add_patient_weight = input('Weight: ')
+                add_patient_sex = input('Sex (M/F): ')
+                add_patient_result = input('Result (positive/negative): ')
+                new_patient = add_patient_first, add_patient_last, add_patient_weight, add_patient_sex, add_patient_result
+                data.insert(-1, new_patient)
+                #print(data)
+                tuple(data)
+
+    
+    # Searching for Patients
     elif action == "2":
-        #lookup = input("What is their name? ['q' to quit]: ") 
         while True:
-            print(Fore.WHITE+"What is their name?")
-            lookup = input("Name ['q' to quit]: ")
-            if lookup.lower() == 'q':
+            print("What is their First name?")
+            lookup_name = input("First Name ['q' to quit]: ")
+            if lookup_name.lower() == 'q':
                 break
             else:
-                results_look = results.get(lookup)
-                if results_look == "negative":
-                    print(Fore.GREEN+results.get(lookup))
-                elif results_look == "positive":
-                    print(Fore.RED+results.get(lookup))
-                    results_look = results.get(lookup)
-                if results_look == None:
-                    print(Fore.RED+"404: Not Found")
+                if (any(lookup_name in i for i in data)): # Check if patient exists
+                    data_print = list(filter(lambda x: x[0] == lookup_name, data))
+                    data_print_conv = map(list, zip(*data_print))
+                    first, last, weight, sex, result = data_print_conv
+                    print('First name:',first,'Last name:',last,'COVID Result:',result)
+               
+                # No patient error message
+                else:
+                    print("User Does Not Exist")
+
+                                               
+                # Error Code
+                """if lookup == None:
+                    print("404: Not Found")"""
+    # Exit Program
     elif action == "3":
         print("Thank you! Come again soon,",user)
         auth = False
+    # Error Code
     elif action != (1,2,3):
-        print(Fore.RED+"Error: Option Not Found")
+        print("Error: Option Not Found")
