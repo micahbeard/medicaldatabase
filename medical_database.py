@@ -17,21 +17,100 @@ hash the password
 error checking
 Project 3: Improved medical database: error handling, hashed password, more data stored in tuple 
 (first, last, weight, sex, result)
+
+Project 5: Update the medical database with functions:
+Create a branch and make all your changes on that branch
+Update the medical database to use functions (you decide on what should be functions)
+Add a new option to update user records (for example, changing a patient's status from "positive" to "negative")
+Create a Pull Request on github to merge your changes (We will walk through the PR together)
+
+
 '''
 import time
 import hashlib
 
 
 # Data Base
-data = [('Bob', 'Bobson','175', 'M', 'negative'), \
-    ('John', 'Johnson','153', 'M', 'positive'), \
-    ('Sara', 'Sarason','130', 'F', 'positive')]
-data = list(data)
+data = {"Bob":('Bob', 'Bobson','175', 'M', 'negative'), "John":('John', 'Johnson','153', 'M', 'positive'), "Sara":('Sara', 'Sarason','130', 'F', 'positive')}
+
 # Var
 usr_id = ""
 file = open("usr_list.txt", 'r')
 auth = False
 user_auth = True
+
+
+
+
+def add_pat():
+    while True:
+        add_patient_first = input("Please give me the first name of the Patient ['q' to quit]: ")
+        if add_patient_first.lower() == 'q':
+            break
+        else:
+            #print(data)
+            add_patient_last = input('Last Name: ')
+            add_patient_weight = input('Weight: ')
+            add_patient_sex = input('Sex (M/F): ')
+            add_patient_result = input('Result (positive/negative): ')
+            data[add_patient_first] = add_patient_first, add_patient_last, add_patient_weight, add_patient_sex, add_patient_result
+            
+            #print(data)
+            tuple(data)
+def search_pat():
+ while True:
+            print("What is their First name?")
+            lookup_name = input("First Name ['q' to quit]: ")
+            if lookup_name.lower() == 'q':
+                break
+            else:
+                if (any(lookup_name in i for i in data)): # Check if patient exists
+                    data_print = data[lookup_name]
+                    first, last, weight, sex, result = data_print
+                    print(data_print)
+                    print('First name:',first,'\nLast name:',last,'\nCOVID Result:',result)
+               
+                # No patient error message
+                else:
+                    print("User Does Not Exist")
+                    
+def edit_pat():
+    while True:
+            print("What is their First name?")
+            lookup_name = input("First Name ['q' to quit]: ")
+            if lookup_name.lower() == 'q':
+                break
+            else:
+                if (any(lookup_name in i for i in data)): # Check if patient exists
+                    data_print = data[lookup_name]
+                    first, last, weight, sex, result = data_print
+                    change_data = input("What would you like to edit?\n 1: Result \n 2: Weight\n")
+
+                    if change_data == "1":
+                        print("Their existing result is:",result)
+                        usr_change = input("What would you like to change it to (positive/negative): ")
+                        if usr_change == 'positive' or usr_change == 'negative':
+                            data[lookup_name] = first, last, weight, sex, usr_change
+                            print(data[lookup_name])
+                            
+                        else:
+                            print("Please input positive or negative")
+
+                    if change_data == "2":
+                        print("Their existing weight is:",weight)
+                        usr_change = input("What would you like to change it to (only numbers): ")
+                        data[lookup_name] = first, last, usr_change, sex, result
+
+                    #print('First name:',first,'\nLast name:',last,'\nCOVID Result:',result)
+                
+                # No patient error message
+                else:
+                    print("User Does Not Exist")
+
+
+
+
+
 
 # Welcome Message
 print("Welcome to the Medical Database")
@@ -72,54 +151,29 @@ time.sleep(.2)
 while auth:
     
     # Menu Selector
-    print("1: Add New Result, 2: Search the Database, 3: Exit Program")
+    print("1: Add New Result, 2: Search the Database, 3: Edit Patient, 4: Exit Program")
     action = input("What do you want to do? ")
     
     
     # Adding Patients
     if action == "1":
-        while True:
-            add_patient_first = input("Please give me the first name of the Patient ['q' to quit]: ")
-            if add_patient_first.lower() == 'q':
-                break
-            else:
-                #print(data)
-                add_patient_last = input('Last Name: ')
-                add_patient_weight = input('Weight: ')
-                add_patient_sex = input('Sex (M/F): ')
-                add_patient_result = input('Result (positive/negative): ')
-                new_patient = add_patient_first, add_patient_last, add_patient_weight, add_patient_sex, add_patient_result
-                data.insert(-1, new_patient)
-                #print(data)
-                tuple(data)
+        add_pat()
 
-    
+
     # Searching for Patients
     elif action == "2":
-        while True:
-            print("What is their First name?")
-            lookup_name = input("First Name ['q' to quit]: ")
-            if lookup_name.lower() == 'q':
-                break
-            else:
-                if (any(lookup_name in i for i in data)): # Check if patient exists
-                    data_print = list(filter(lambda x: x[0] == lookup_name, data))
-                    data_print_conv = map(list, zip(*data_print))
-                    first, last, weight, sex, result = data_print_conv
-                    print('First name:',first,'Last name:',last,'COVID Result:',result)
-               
-                # No patient error message
-                else:
-                    print("User Does Not Exist")
-
-                                               
-                # Error Code
-                """if lookup == None:
-                    print("404: Not Found")"""
-    # Exit Program
+        search_pat()
+              
+    # Edit Patient
     elif action == "3":
+        edit_pat()
+
+    # Exit Program
+    elif action == "4":
         print("Thank you! Come again soon,",user)
         auth = False
+
+
     # Error Code
-    elif action != (1,2,3):
+    elif action != (1,2,3,4):
         print("Error: Option Not Found")
