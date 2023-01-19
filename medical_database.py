@@ -33,14 +33,11 @@ import hashlib
 # Data Base
 data = {"Bob":('Bob', 'Bobson','175', 'M', 'negative'), "John":('John', 'Johnson','153', 'M', 'positive'), "Sara":('Sara', 'Sarason','130', 'F', 'positive')}
 
-"""data = [('Bob', 'Bobson','175', 'M', 'negative'), \
-    ('John', 'Johnson','153', 'M', 'positive'), \
-    ('Sara', 'Sarason','130', 'F', 'positive')]"""
-#data = list(data)
 
 
 
-def add_usr():
+
+def add_pat():
     while True:
         add_patient_first = input("Please give me the first name of the Patient ['q' to quit]: ")
         if add_patient_first.lower() == 'q':
@@ -55,7 +52,7 @@ def add_usr():
             data.insert(-1, new_patient)
             #print(data)
             tuple(data)
-def search_usr():
+def search_pat():
  while True:
             print("What is their First name?")
             lookup_name = input("First Name ['q' to quit]: ")
@@ -77,8 +74,31 @@ def search_usr():
                 """if lookup == None:
                     print("404: Not Found")"""
                     
-def edit_usr():
-    print("Hi!")
+def edit_pat():
+    while True:
+            print("What is their First name?")
+            lookup_name = input("First Name ['q' to quit]: ")
+            if lookup_name.lower() == 'q':
+                break
+            else:
+                if (any(lookup_name in i for i in data)): # Check if patient exists
+                    data_print = data[lookup_name]
+                    first, last, weight, sex, result = data_print
+                    print("User Exists! \nTheir existing result is:",result)
+                    usr_change = input("What would you like to change it to (positive/negative): ")
+                    print(usr_change)
+                    if usr_change == 'positive' or 'negative':
+                        data[lookup_name] = first, last, weight, sex, usr_change
+                        print(data[lookup_name])
+                    else:
+                        print("Please input positive or negative")
+                        #edit_usr()
+
+                    #print('First name:',first,'\nLast name:',last,'\nCOVID Result:',result)
+                
+                # No patient error message
+                else:
+                    print("User Does Not Exist")
 
 
 
@@ -134,16 +154,16 @@ while auth:
     
     # Adding Patients
     if action == "1":
-        add_usr()
+        add_pat()
 
 
     # Searching for Patients
     elif action == "2":
-        search_usr()
+        search_pat()
        
 
     elif action == "3":
-        edit_usr()
+        edit_pat()
 
     # Edit User
     elif action == "4":
