@@ -33,6 +33,11 @@ import hashlib
 # Data Base
 data = {"Bob":('Bob', 'Bobson','175', 'M', 'negative'), "John":('John', 'Johnson','153', 'M', 'positive'), "Sara":('Sara', 'Sarason','130', 'F', 'positive')}
 
+# Var
+usr_id = ""
+file = open("usr_list.txt", 'r')
+auth = False
+user_auth = True
 
 
 
@@ -48,8 +53,8 @@ def add_pat():
             add_patient_weight = input('Weight: ')
             add_patient_sex = input('Sex (M/F): ')
             add_patient_result = input('Result (positive/negative): ')
-            new_patient = add_patient_first, add_patient_last, add_patient_weight, add_patient_sex, add_patient_result
-            data.insert(-1, new_patient)
+            data[add_patient_first] = add_patient_first, add_patient_last, add_patient_weight, add_patient_sex, add_patient_result
+            
             #print(data)
             tuple(data)
 def search_pat():
@@ -68,11 +73,6 @@ def search_pat():
                 # No patient error message
                 else:
                     print("User Does Not Exist")
-
-                                               
-                # Error Code
-                """if lookup == None:
-                    print("404: Not Found")"""
                     
 def edit_pat():
     while True:
@@ -84,15 +84,22 @@ def edit_pat():
                 if (any(lookup_name in i for i in data)): # Check if patient exists
                     data_print = data[lookup_name]
                     first, last, weight, sex, result = data_print
-                    print("User Exists! \nTheir existing result is:",result)
-                    usr_change = input("What would you like to change it to (positive/negative): ")
-                    print(usr_change)
-                    if usr_change == 'positive' or 'negative':
-                        data[lookup_name] = first, last, weight, sex, usr_change
-                        print(data[lookup_name])
-                    else:
-                        print("Please input positive or negative")
-                        #edit_usr()
+                    change_data = input("What would you like to edit?\n 1: Result \n 2: Weight\n")
+
+                    if change_data == "1":
+                        print("Their existing result is:",result)
+                        usr_change = input("What would you like to change it to (positive/negative): ")
+                        if usr_change == 'positive' or usr_change == 'negative':
+                            data[lookup_name] = first, last, weight, sex, usr_change
+                            print(data[lookup_name])
+                            
+                        else:
+                            print("Please input positive or negative")
+
+                    if change_data == "2":
+                        print("Their existing weight is:",weight)
+                        usr_change = input("What would you like to change it to (only numbers): ")
+                        data[lookup_name] = first, last, usr_change, sex, result
 
                     #print('First name:',first,'\nLast name:',last,'\nCOVID Result:',result)
                 
@@ -103,11 +110,7 @@ def edit_pat():
 
 
 
-# Var
-usr_id = ""
-file = open("usr_list.txt", 'r')
-auth = False
-user_auth = True
+
 
 # Welcome Message
 print("Welcome to the Medical Database")
@@ -160,17 +163,17 @@ while auth:
     # Searching for Patients
     elif action == "2":
         search_pat()
-       
-
+              
+    # Edit Patient
     elif action == "3":
         edit_pat()
 
-    # Edit User
+    # Exit Program
     elif action == "4":
         print("Thank you! Come again soon,",user)
         auth = False
 
 
     # Error Code
-    elif action != (1,2,3):
+    elif action != (1,2,3,4):
         print("Error: Option Not Found")
