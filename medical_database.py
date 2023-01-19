@@ -31,10 +31,12 @@ import hashlib
 
 
 # Data Base
-data = [('Bob', 'Bobson','175', 'M', 'negative'), \
+data = {"Bob":('Bob', 'Bobson','175', 'M', 'negative'), "John":('John', 'Johnson','153', 'M', 'positive'), "Sara":('Sara', 'Sarason','130', 'F', 'positive')}
+
+"""data = [('Bob', 'Bobson','175', 'M', 'negative'), \
     ('John', 'Johnson','153', 'M', 'positive'), \
-    ('Sara', 'Sarason','130', 'F', 'positive')]
-data = list(data)
+    ('Sara', 'Sarason','130', 'F', 'positive')]"""
+#data = list(data)
 
 
 
@@ -61,10 +63,10 @@ def search_usr():
                 break
             else:
                 if (any(lookup_name in i for i in data)): # Check if patient exists
-                    data_print = list(filter(lambda x: x[0] == lookup_name, data))
-                    data_print_conv = map(list, zip(*data_print))
-                    first, last, weight, sex, result = data_print_conv
-                    print('First name:',first,'Last name:',last,'COVID Result:',result)
+                    data_print = data[lookup_name]
+                    first, last, weight, sex, result = data_print
+                    print(data_print)
+                    print('First name:',first,'\nLast name:',last,'\nCOVID Result:',result)
                
                 # No patient error message
                 else:
