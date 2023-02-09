@@ -24,92 +24,160 @@ Update the medical database to use functions (you decide on what should be funct
 Add a new option to update user records (for example, changing a patient's status from "positive" to "negative")
 Create a Pull Request on github to merge your changes (We will walk through the PR together)
 
+Project 6: medical database update 3.0. Create a patient class to hold patient data rather than using a tuple. 
+Add a height variable to the patient class, add a method to calculate and return bmi, add a method to “add” or “store” notes about a patient, 
+add a method to retrive the notes on a patient.
 
 '''
 import time
 import hashlib
 
 
-# Data Base
-data = {"Bob":('Bob', 'Bobson','175', 'M', 'negative'), "John":('John', 'Johnson','153', 'M', 'positive'), "Sara":('Sara', 'Sarason','130', 'F', 'positive')}
 
+
+class Patient:
+    first_name = ""
+    last_name = ""
+    sex = ""
+    height = 0
+    weight = 0
+    result = ""
+    bmi = 0
+
+
+    def cal_bmi(self):
+        bmi_cal = int(self.weight) / int(self.height)**2
+        self.bmi = round(bmi_cal * 703, 1)
+        print("=====================")
+        print (self.first_name,":",self.bmi,"bmi")
+        print("=====================")
+
+    def view_data(self):
+        print("=====================")
+        print("First Name: ",self.first_name)
+        print("Last Name: ",self.last_name)
+        print("Result: ",self.result)
+        print("=====================")
+    
+    def add_pat(self):
+        print("======Adding Patient======")
+        self.first_name = input("First Name: ")
+        self.last_name = input("Last Name: ")
+        self.sex = input("Sex(M/F): ")
+        self.height = input("Height in inches: ")
+        self.weight = input("Weight in pounds: ")
+        self.result = input("Positive/Negitive: ")
+        success()
+
+    def edit_pat(self):
+        print("======Edit Patient======")
+        print("What would you like to update?\n'1' to Update Height\n'2' to Update Weight\n'3' to Update result")
+        update_pat = input()
+        if update_pat == "1":
+            print("---Update Height---")
+            print("Current Height: ",self.height)
+            update_pat_h = input("Height(in): ")
+            self.height = int(update_pat_h)
+            success()
+        elif update_pat == "2":
+            print("---Update Weight---")
+            print("Current Weight: ",self.weight)
+            update_pat_w = input("Weight(lb): ")
+            self.weight = int(update_pat_w)
+            success()
+        elif update_pat == "3":
+            print("---Update Result---")
+            print("Current Result: ",self.result)
+            update_pat_r = input("Result(positive/negative): ")
+            if update_pat_r == "positive" or update_pat_r == "negative":
+                self.result = update_pat_r
+                success()
+            else:
+                pat_error()
+
+def pat_error():
+    print("-----ERROR-----")
+
+def success():
+    print("======Success======")
+
+
+bob = Patient()
+bob.first_name = "Bob"
+bob.last_name = "Bobson"
+bob.height = 70.8
+bob.weight = 162.3
+bob.result = "negative"
+bob.sex = "M"
+
+john = Patient()
+john.first_name = "John"
+john.last_name = "Johnson"
+john.height = 65.3
+john.weight = 146.23
+john.result = "positive"
+john.sex = "M"
+
+sara = Patient()
+sara.first_name = "Sara"
+sara.last_name = "Sarason"
+sara.height = 54.2
+sara.weight = 103.4
+sara.result = "negative"
+sara.sex = "F"
+
+
+# Data Base
+data = {"Bob": bob, "John": john, "Sara": sara}
 # Var
 usr_id = ""
 file = open("usr_list.txt", 'r')
 auth = False
 user_auth = True
 
-
-
-
 def add_pat():
-    while True:
-        add_patient_first = input("Please give me the first name of the Patient ['q' to quit]: ")
-        if add_patient_first.lower() == 'q':
-            break
-        else:
-            #print(data)
-            add_patient_last = input('Last Name: ')
-            add_patient_weight = input('Weight: ')
-            add_patient_sex = input('Sex (M/F): ')
-            add_patient_result = input('Result (positive/negative): ')
-            data[add_patient_first] = add_patient_first, add_patient_last, add_patient_weight, add_patient_sex, add_patient_result
+    print("=====================")
+    add_patient_id = input("New Patient's Name: ")
+    add_pat_def = add_patient_id
+    add_pat_def = Patient()
+    data[add_patient_id] = add_pat_def
+    add_pat_def.add_pat()
+        
             
-            #print(data)
-            tuple(data)
 def search_pat():
- while True:
-            print("What is their First name?")
-            lookup_name = input("First Name ['q' to quit]: ")
-            if lookup_name.lower() == 'q':
-                break
-            else:
-                if (any(lookup_name in i for i in data)): # Check if patient exists
-                    data_print = data[lookup_name]
-                    first, last, weight, sex, result = data_print
-                    print(data_print)
-                    print('First name:',first,'\nLast name:',last,'\nCOVID Result:',result)
-               
-                # No patient error message
-                else:
-                    print("User Does Not Exist")
-                    
+    print("=====================")
+    lookup_name = input("What is the patient's name: ")
+    if lookup_name in data.keys(): # Check if patient exists
+        data_patient = data[lookup_name]
+        data_patient.view_data()
+
+    # No patient error message
+    else:
+        pat_error()
+            
+            
+                        
 def edit_pat():
-    while True:
-            print("What is their First name?")
-            lookup_name = input("First Name ['q' to quit]: ")
-            if lookup_name.lower() == 'q':
-                break
-            else:
-                if (any(lookup_name in i for i in data)): # Check if patient exists
-                    data_print = data[lookup_name]
-                    first, last, weight, sex, result = data_print
-                    change_data = input("What would you like to edit?\n 1: Result \n 2: Weight\n")
+    print("=====================")
+    lookup_name = input("What is the patient's name: ")
+    if lookup_name in data.keys(): # Check if patient exists
+        data_patient = data[lookup_name]
+        data_patient.edit_pat()
 
-                    if change_data == "1":
-                        print("Their existing result is:",result)
-                        usr_change = input("What would you like to change it to (positive/negative): ")
-                        if usr_change == 'positive' or usr_change == 'negative':
-                            data[lookup_name] = first, last, weight, sex, usr_change
-                            print(data[lookup_name])
-                            
-                        else:
-                            print("Please input positive or negative")
+    # No patient error message
+    else:
+        pat_error()
 
-                    if change_data == "2":
-                        print("Their existing weight is:",weight)
-                        usr_change = input("What would you like to change it to (only numbers): ")
-                        data[lookup_name] = first, last, usr_change, sex, result
+def bmi_cal():
+    print("=====================")
+    lookup_name = input("What is the patient's name: ")
+    if lookup_name in data.keys(): # Check if patient exists
+        data_patient = data[lookup_name]
+        data_patient.cal_bmi()
 
-                    #print('First name:',first,'\nLast name:',last,'\nCOVID Result:',result)
-                
-                # No patient error message
-                else:
-                    print("User Does Not Exist")
-
-
-
-
+    # No patient error message
+    else:
+        pat_error()
 
 
 # Welcome Message
@@ -151,7 +219,9 @@ time.sleep(.2)
 while auth:
     
     # Menu Selector
-    print("1: Add New Result, 2: Search the Database, 3: Edit Patient, 4: Exit Program")
+    print("=====================")
+    print("1: Add New Resultn\n2: Search the Database\n3: Edit Patient\n4: BMI Calculator of Patientn\n5: Exit Program")
+    print("=====================")
     action = input("What do you want to do? ")
     
     
@@ -168,12 +238,17 @@ while auth:
     elif action == "3":
         edit_pat()
 
-    # Exit Program
     elif action == "4":
+        bmi_cal()
+
+
+     # Exit Program
+    elif action == "5":
         print("Thank you! Come again soon,",user)
+        print("=====================")
         auth = False
 
 
     # Error Code
-    elif action != (1,2,3,4):
+    elif action != (1,2,3,4,5):
         print("Error: Option Not Found")
